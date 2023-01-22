@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Lecture 3</title>
+
+		<link rel="shortcut icon" type="image/x-icon" href="uu_logo/UU_logo_color-cropped.ico">
+
+		<link rel="stylesheet" href="reveal.js/dist/reset.css">
+		<link rel="stylesheet" href="reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="reveal.js/dist/theme/black.css">
+
+		<!-- Tabler icons -->
+		<link rel="stylesheet" href="tabler-icons/iconfont/tabler-icons.min.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="atomic-one-dark.css">
+
+		<!-- Custom css -->
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<img class="logo" src="uu_logo/UU_logo_vit-cropped.svg">
+		<div class="reveal">
+			<div class="slides">
+<!-- BEGIN SLIDES -->
+<section data-background-image="images/background.jpg" data-background-opacity="0.4">
+	<h1>Lecture 3</h1>
+	<p>Nikolaus Huber</p>
+</section>
+
+<section>
+	<h3>Outline</h3>
+
+	<ul class="box-list">
+		<li><i class="ti ti-alarm"></i>RTOS Basics</li>
+		<li><i class="ti ti-trowel"></i>Zephyr</li>
+	</ul>
+</section>
+
+<section>
+	<h1>Realtime operating systems</h1>
+</section>
+
+<section>
+	<img style="width: 60%" src="images/sdk_app.drawio.png">
+</section> 
+
+<section>
+	<img style="width: 60%" src="images/simple_rtos.drawio.png">
+</section> 
+
+<section>
+	<img style="width: 60%" src="images/extended_rtos.drawio.png">
+</section> 
+
+<section>
+	<h3>Scheduling - Round Robin</h3>
+	<img class="r-stretch" src="images/round_robin.drawio.svg">
+</section>
+
+<section>
+	<h3>Scheduling - Preempt / Coop</h3>
+	<img class="r-stretch" src="images/preempt_coop.drawio.svg">
+</section>
+
+<section>
+	<h2>Zephyr Kernel</h2>
+	<img style="width: 40%" src="images/Zephyr_RTOS_logo_2015.svg">
+	<div class="citation">
+		<div class="cite">
+			“The Zephyr kernel lies at the heart of every Zephyr application. 
+			It provides a low footprint, high performance, multi-threaded execution environment 
+			with a rich set of available features. The rest of the Zephyr ecosystem, including 
+			device drivers, networking stack, and application-specific code, uses the kernel's 
+			features to create a complete application.”
+		</div>
+		<div class="source">Zephyr Documentation</div>
+	</div>
+</section>
+
+<section>
+	<h3>Zephyr threads</h3>
+	<div class="citation">
+		<div class="cite">“A thread is a kernel object that is
+			used for application processing
+			that is too lengthy or to complex
+			to be performed by an ISR”
+		</div>
+		<div class="source">Zephyr Documentation</div>
+	</div>
+	<ul>
+		<li>Any number of threads can be defined (limited by RAM)</li>
+		<li>Important parts of a thread</li>
+		<ul>
+			<li>Thread ID</li>
+			<li>Stack area (private to each thread)</li>
+			<li>Entry point function (3 arguments)</li>
+			<li>Scheduling priority</li>
+			<li>Start Delay</li>
+			<li>(Execution mode)</li>
+		</ul>
+	</ul>
+</section>
+
+<section>
+	<h3>Thread states</h3>
+	<img class="r-stretch" src="images/thread_states.drawio.svg">
+</section>
+
+<section>
+	<h3>Thread priorities</h3>
+	<img class="r-stretch" src="images/thread_priorities.drawio.svg">
+</section> 
+
+<section>
+	<h3>Zephyr thread anatomy</h3>
+	<pre class="C"><code data-trim data-noescape data-line-numbers="">
+		void thread (void * arg1, void * arg2, void * arg3)
+		{
+			/* Thread init */ 
+
+			for(;;)
+			{
+				/* Thread body */
+			}
+		}
+	</code></pre>
+</section>
+
+<section>
+	<h3>Spawning a thread (dynamically)</h3>
+	<pre class="C"><code data-trim data-noescape data-line-numbers="">
+		#define MY_STACK_SIZE 500
+		#define MY_PRIORITY 5
+
+		extern void my_entry_point(void *, void *, void *);
+
+		K_THREAD_STACK_DEFINE(my_stack_area, MY_STACK_SIZE);
+		struct k_thread my_thread_data;
+
+		/* in main () */
+		k_tid_t my_tid = k_thread_create(&my_thread_data, my_stack_area,
+										K_THREAD_STACK_SIZEOF(my_stack_area),
+										my_entry_point,
+										NULL, NULL, NULL,
+										MY_PRIORITY, 0, K_NO_WAIT);
+	</code></pre>
+</section>
+
+<section>
+	<h3>Spawning a thread (statically)</h3>
+	<pre class="C"><code data-trim data-noescape data-line-numbers="">
+		#define MY_STACK_SIZE 500
+		#define MY_PRIORITY 5
+
+		extern void my_entry_point(void *, void *, void *);
+
+		K_THREAD_DEFINE(my_tid, MY_STACK_SIZE,
+						my_entry_point, NULL, NULL, NULL,
+						MY_PRIORITY, 0, 0);
+	</code></pre>
+</section>
+
+<section>
+	<h3>Terminating a thread</h3>
+	<pre class="C"><code data-trim data-noescape data-line-numbers="">
+		void my_entry_point(void * arg1, void * arg2, void * arg3)
+		{
+			for(;;) 
+			{
+				if (/* some condition */) { return; }
+				/* ... */
+			}
+			/* thread terminates here */
+		}
+	</code></pre>
+	<ul>
+		<li class="fragment fade-up">Usually, threads run forever</li>
+		<li class="fragment fade-up">Use with caution!</li>
+		<li class="fragment fade-up">No data is released automatically at termination!</li>
+	</ul>
+</section>
+
+<section>
+	<h3>More information on threads</h3>
+	<a style="font-size: 2rem" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html">https://docs.zephyrproject.org/latest/kernel/services/threads/index.html</a>
+</section>
+
+<section>
+	<h3>Inter-task communication</h3>
+	<ul>
+		<li class="fragment fade-up">Tasks often need to communicate / exchange data</li>
+		<li class="fragment fade-up">Same problem we have already seen with ISR - main communication</li>
+		<li class="fragment fade-up">Two general paradigms</li>
+		<ul>
+			<li class="fragment fade-up">Shared memory</li>
+			<li class="fragment fade-up">Messsage passing</li>
+		</ul>
+	</ul>
+</section>
+
+<section>
+	<h3>Shared memory</h3>
+	<ul>
+		<li>Tasks share memory</li>
+		<ul>
+			<li>global / static variables</li>
+			<li>same heap location</li>
+		</ul>
+		<li>Susceptible to common pitfalls</li>
+		<li>Access needs to be carefully managed</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Example - data race</h3>
+	<pre class="C"><code data-trim data-noescape data-line-numbers="|7,16">
+		int sharedData; 
+
+		void task1 (void* a1, void* a2, void* a3)
+		{
+			for(int i = 0; i < 1000000; i++)
+			{
+				sharedData = sharedData + 1; 
+			}	
+			k_sleep(K_FOREVER);  	
+		}
+
+		void task2 (void* a1, void* a2, void* a3)
+		{
+			for(int i = 0; i < 1000000; i++)
+			{
+				sharedData = sharedData + 1; 
+			}	
+			k_sleep(K_FOREVER); 	
+		}
+
+	</code></pre>
+</section>
+
+<section>
+	<h3>Solutions</h3>
+	<ul>
+		<li class="fragment fade-up">Use cooperative tasks (i.e. tasks that cannot be preemtped)</li>
+		<ul>
+			<li class="fragment fade-up">Must make sure that tasks aborts or sleeps forever</li>
+		</ul>
+		<li class="fragment fade-up">Lock interrupts before accessing shared data</li>
+		<ul>
+			<li class="fragment fade-up">Potentially increases response time of the system to important events</li>
+		</ul>
+		<li class="fragment fade-up">Use a <emph>Mutex</emph></li>
+	</ul>
+</section>
+
+<section>
+	<h3>Mutex</h3>
+	<ul>
+		<li class="fragment fade-up">Allows multiple threads to safely share both hardware and software resources</li>
+		<li class="fragment fade-up">Ensures <emph>mut</emph>ually <emph>ex</emph>clusive access to a resource</li>
+		<li class="fragment fade-up">General idea</li>
+		<ul>
+			<li class="fragment fade-up">We request (lock) a mutex before entering a critical section</li>
+			<li class="fragment fade-up">We return (unlock) a mutex when we exit the critical section</li>
+		</ul>
+	</ul>
+</section>
+
+<section>
+	<img class="r-stretch" src="images/mutex.svg">
+	<div style="font-size: 0.8rem; float: left">
+		<span>Adapted from <a href="https://tilics.dmi.unibas.ch/mutex">https://tilics.dmi.unibas.ch/mutex</a></span>
+	</div>
+</section>
+
+<!-- END SLIDES -->
+</div>
+</div>
+		<script src="reveal.js/dist/reveal.js"></script>
+		<script src="reveal.js/plugin/notes/notes.js"></script>
+		<script src="reveal.js/plugin/markdown/markdown.js"></script>
+		<script src="reveal.js/plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				controlsTutorial: false,
+				transition: 'fade', 
+				slideNumber: 'c', 
+				pdfSeparateFragments: false, 
+				navigationMode: 'linear', 
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
