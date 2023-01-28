@@ -1,4 +1,4 @@
-# 1DT106 Lecture 2: State machines 
+# 1DT106 Lecture 3: Zephyr
 
 This repository holds the slides for the third lecture in 1DT106 Programming
 Embedded Systems at Uppsala University. 
