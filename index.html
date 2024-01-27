@@ -249,9 +249,9 @@
 	<section>
 		<h3>Solutions</h3>
 		<ul>
-			<li class="fragment fade-up">Use cooperative tasks (i.e. tasks that cannot be preemtped)</li>
+			<li class="fragment fade-up">Use cooperative tasks (i.e. tasks that cannot be preempted)</li>
 			<ul>
-				<li class="fragment fade-up">Must make sure that tasks aborts or sleeps forever</li>
+				<li class="fragment fade-up">Must make sure that tasks abort or sleep forever</li>
 			</ul>
 			<li class="fragment fade-up">Lock interrupts before accessing shared data</li>
 			<ul>
@@ -309,7 +309,7 @@
 			<li class="fragment fade-up">H tries to lock mutex</li>
 			<li class="fragment fade-up">L continues, is interrupted by medium priority task M</li>
 			<li class="fragment fade-up">H has to wait for M to finish => <emph>priority inversion</emph></li>
-			<li class="fragment fade-up">Solution => Priority inheritence</li>
+			<li class="fragment fade-up">Solution => Priority inheritance</li>
 			<ul>
 				<li class="fragment fade-up">Raise priority of L to same as H</li>
 			</ul>
@@ -469,7 +469,7 @@
 		<h3>Application configuration</h3>
 		<ul>
 			<li>By setting CONFIG values in prj.conf</li>
-			<li>Uses a tool caled <emph>Kconfig</emph></li>
+			<li>Uses a tool called <emph>Kconfig</emph></li>
 			<ul>
 				<li>Initially developed for the Linux kernel</li>
 				<li>Can use tools like <emph>menuconfig</emph> or <emph>guiconfig</emph> to make temporary changes</li>
@@ -491,7 +491,7 @@
 		<h3>Device tree</h3>
 		<ul>
 			<li class="fragment fade-up">Hierarchical data structure (tree) that describes HW</li>
-			<li class="fragment fade-up">Defined by independet specification</li>
+			<li class="fragment fade-up">Defined by independent specification</li>
 			<li class="fragment fade-up">User specifies HW layout in a .dts file</li>
 			<li class="fragment fade-up">For Linux: compiled to binary representation used during boot-up</li>
 			<li class="fragment fade-up">For Zephyr: compiled to header file</li>
