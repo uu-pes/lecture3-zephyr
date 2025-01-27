@@ -340,13 +340,18 @@
 				k_mutex_unlock(&mutex_B); 
 			}
 		</code></pre>
+		<ul>
+			<li class="fragment fade-up">Suppose task1 takes mutex_A, then task2 takes mutex_B...</li>
+			<li class="fragment fade-up">=> <emph>DEADLOCK</emph></li>
+			<li class="fragment fade-up">Solution => Lock semaphores in <emph>same order</emph></li>
+		</ul>
 	</section>
 
 	<section>
 		<h3>Semaphores</h3>
 		<ul>
-			<li class="fragment fade-up">Similar to mutex</li>
-			<li class="fragment fade-up"><emph>Counting semaphore</emph>: can be "locked" multiple times</li>
+			<li class="fragment fade-up">Similar to mutex, operations take and give</li>
+			<li class="fragment fade-up"><emph>Counting semaphore</emph>: can be "locked" (taken) multiple times</li>
 			<ul>
 				<li class="fragment fade-up">E.g. if multiple instances of a peripheral are available</li>
 			</ul>
