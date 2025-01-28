@@ -61,12 +61,29 @@
 
 	<section>
 		<h3>Scheduling - Round Robin</h3>
-		<img class="r-stretch" src="images/round_robin.drawio.svg">
+		<img class="r-stretch" src="images/rtos_round_robin.png">
 	</section>
 
 	<section>
-		<h3>Scheduling - Preempt / Coop</h3>
-		<img class="r-stretch" src="images/preempt_coop.drawio.svg">
+		<h3>Scheduling - Preemptive</h3>
+		<img class="r-stretch" src="images/rtos_preempt.png">
+		<ul>
+			<li>Assumes Prio(T3) > Prio(T2) > Prio(T1)</li>
+			<li>Thread preempted by higher prio thread</li>
+			<li>Kernel invoked during certain events, e.g.,</li>
+			<ul>
+				<li>Thread unready (e.g., sleep, lock)</li>
+				<li>New thread ready (e.g., sleep done)</li>
+			</ul>
+		</ul>
+	</section>
+	
+	<section>
+		<h3>Scheduling - Preemptive/Coop</h3>
+		<img class="r-stretch" src="images/rtos_coop.png">
+		<ul>
+			<li>Cooperative thread cannot be preempted but can <emph>yield</emph> execution</li>
+		</ul>
 	</section>
 </section>
 
