@@ -68,12 +68,11 @@
 		<h3>Scheduling - Preemptive</h3>
 		<img class="r-stretch" src="images/rtos_preempt.png">
 		<ul>
-			<li>Assumes Prio(T3) > Prio(T2) > Prio(T1)</li>
 			<li>Thread preempted by higher prio thread</li>
 			<li>Kernel invoked during certain events, e.g.,</li>
 			<ul>
-				<li>Thread unready (e.g., sleep, lock)</li>
-				<li>New thread ready (e.g., sleep done)</li>
+				<li>Thread becomes unready (e.g., sleep, lock)</li>
+				<li>Thread becomes ready (e.g., thread start, sleep done)</li>
 			</ul>
 		</ul>
 	</section>
@@ -196,12 +195,11 @@
 					if (/* some condition */) { return; }
 					/* ... */
 				}
-				/* thread terminates here */
 			}
 		</code></pre>
 		<ul>
 			<li class="fragment fade-up">Usually, threads run forever</li>
-			<li class="fragment fade-up">Use with caution!</li>
+			<li class="fragment fade-up">Terminating (return from entry point) should be done with caution!</li>
 			<li class="fragment fade-up">No data is released automatically at termination!</li>
 		</ul>
 	</section>
@@ -270,7 +268,7 @@
 		<ul>
 			<li class="fragment fade-up">Use cooperative tasks (i.e. tasks that cannot be preempted)</li>
 			<ul>
-				<li class="fragment fade-up">Must make sure that tasks abort or sleep forever</li>
+				<li class="fragment fade-up">Must ensure such tasks yield/become unready as needed</li>
 			</ul>
 			<li class="fragment fade-up">Lock interrupts before accessing shared data</li>
 			<ul>
@@ -490,14 +488,17 @@
 	</section>
 
 	<section>
-		<h3>Application configuration</h3>
+		<h3>Software support configuration</h3>
 		<ul>
+			<pre class="C"><code data-trim data-noescape>
+				CONFIG_GPIO=y 
+				</code>
+			</pre>
 			<li>By setting CONFIG values in prj.conf</li>
 			<li>Uses a tool called <emph>Kconfig</emph></li>
 			<ul>
 				<li>Initially developed for the Linux kernel</li>
 				<li>Can use tools like <emph>menuconfig</emph> or <emph>guiconfig</emph> to make temporary changes</li>
-				<li>Slowly being replaced by <emph>devicetree</emph></li>
 			</ul>
 		</ul>
 	</section>
@@ -517,8 +518,7 @@
 			<li class="fragment fade-up">Hierarchical data structure (tree) that describes HW</li>
 			<li class="fragment fade-up">Defined by independent specification</li>
 			<li class="fragment fade-up">User specifies HW layout in a .dts file</li>
-			<li class="fragment fade-up">For Linux: compiled to binary representation used during boot-up</li>
-			<li class="fragment fade-up">For Zephyr: compiled to header file</li>
+			<li class="fragment fade-up">For Zephyr: .dts compiled to header file</li>
 		</ul>
 	</section>
 
@@ -556,7 +556,7 @@
 	<ul>
 		<li class="fragment fade-up">Whenever a variable is shared between two tasks, or a task and an ISR</li>
 		<li class="fragment fade-up">C qualifier <emph>volatile</emph></li>
-		<li class="fragment fade-up">Tells the compiler that it cannot rely on previously read values</li>
+		<li class="fragment fade-up">Tells the compiler that it must always read the latest value</li>
 	</ul>
 	<div><a class="fragment fade-up" style="font-size: 2rem" href="https://barrgroup.com/embedded-systems/how-to/c-volatile-keyword">https://barrgroup.com/embedded-systems/how-to/c-volatile-keyword</a></div>
 </section>
@@ -579,6 +579,10 @@
 			global_var = true; 
 		}
 	</code></pre>
+</section>
+
+<section data-background-image="images/code.jpg" data-background-opacity="0.2">
+	<h1>Example</h1>
 </section>
 
 <section>
